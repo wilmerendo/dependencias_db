@@ -1,27 +1,34 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Versión del servidor:         8.0.30 - MySQL Community Server - GPL
--- SO del servidor:              Win64
--- HeidiSQL Versión:             12.1.0.6537
--- --------------------------------------------------------
+-- Crear base de datos
+CREATE DATABASE dependencias_db;
+USE dependencias_db;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Tabla de Empresas
+CREATE TABLE empresas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
 
--- La exportación de datos fue deseleccionada.
+-- Tabla de Dependencias
+CREATE TABLE dependencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    codigo VARCHAR(50) NOT NULL,
+    telefono VARCHAR(20),
+    direccion VARCHAR(255),
+    FOREIGN KEY (empresa_id) REFERENCES empresas(id),
+    UNIQUE KEY unique_dependencia (nombre, empresa_id),
+    UNIQUE KEY unique_codigo (codigo, empresa_id)
+);
 
--- La exportación de datos fue deseleccionada.
+-- Tabla de Usuarios
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    dependencia_id INT,
+    FOREIGN KEY (dependencia_id) REFERENCES dependencias(id)
+);
 
--- La exportación de datos fue deseleccionada.
-
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+-- Índices adicionales para mejorar el rendimiento
+CREATE INDEX idx_dependencia_empresa ON dependencias(empresa_id);
+CREATE INDEX idx_usuario_dependencia ON usuarios(dependencia_id);
